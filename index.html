@@ -1,547 +1,529 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" dir="ltr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>B7R — Montres & Lunettes</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B7R WATCH | L'Atelier du Temps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif;background:#fafaf9;color:#292524;min-height:100vh;}
-.serif{font-family:'Fraunces',serif;}
-a{color:inherit;text-decoration:none;}
-button{font-family:inherit;cursor:pointer;}
-::-webkit-scrollbar{width:8px;} ::-webkit-scrollbar-thumb{background:#d6d3d1;border-radius:8px;}
+  :root{
+    --vault:#0A0908;
+    --vault-2:#151210;
+    --brass:#B08D57;
+    --brass-light:#E3C68A;
+    --parchment:#E9DEC6;
+    --line:rgba(227,198,138,.15);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--vault);
+    color:var(--parchment);
+    font-family:'Jost',sans-serif;
+    overflow-x:hidden;
+  }
+  .display{font-family:'Marcellus',serif;}
+  .script{font-family:'Cormorant Garamond',serif;font-style:italic;}
+  a{color:inherit;text-decoration:none;}
+  .eyebrow{
+    font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--brass);font-weight:600;
+  }
 
-/* Header */
-header{position:sticky;top:0;z-index:30;background:rgba(250,250,249,.92);backdrop-filter:blur(8px);border-bottom:1px solid #e7e5e4;}
-.headwrap{max-width:1100px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
-.brand{display:flex;align-items:center;gap:10px;}
-.dial{width:36px;height:36px;border-radius:50%;border:1.5px solid #1c1917;position:relative;flex-shrink:0;}
-.dial::before{content:'';position:absolute;width:2px;height:11px;background:#1c1917;top:5px;left:17px;transform-origin:bottom;transform:rotate(15deg);}
-.dial::after{content:'';position:absolute;width:8px;height:2px;background:#1c1917;top:17px;left:14px;}
-.brand-name{font-family:'Fraunces',serif;font-weight:700;font-size:20px;letter-spacing:.02em;}
-nav{display:flex;gap:22px;font-size:14px;color:#57534e;}
-nav a:hover{color:#1c1917;}
-.cart-btn{position:relative;background:#1c1917;color:#fff;border:none;border-radius:99px;padding:9px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;}
-.cart-badge{position:absolute;top:-6px;right:-6px;background:#fff;color:#1c1917;border:1.5px solid #1c1917;border-radius:99px;font-size:10px;font-weight:700;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;}
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 6%;
+    background:rgba(10,9,8,.9);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-family:'Marcellus',serif;
+    font-weight:400;font-size:1.4rem;letter-spacing:.1em;
+    display:flex;align-items:center;
+  }
+  .logo .mono{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border:1.5px solid var(--brass);border-radius:50%;
+    font-family:'Jost',sans-serif;font-size:.6rem;font-weight:700;color:var(--brass-light);
+    margin-inline-end:10px;
+  }
+  .nav-cta{
+    border:1px solid var(--brass);color:var(--brass-light);
+    padding:9px 22px;border-radius:2px;
+    font-size:.78rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+    transition:background .2s ease,color .2s ease;
+  }
+  .nav-cta:hover{background:var(--brass);color:var(--vault);}
 
-/* Hero */
-.hero{max-width:1100px;margin:0 auto;padding:56px 20px 30px;text-align:center;}
-.hero h1{font-size:38px;line-height:1.15;}
-.hero p{color:#78716c;font-size:15px;margin-top:10px;max-width:480px;margin-left:auto;margin-right:auto;}
-.hero-cta{display:inline-flex;gap:10px;margin-top:22px;}
-.btn-dark{background:#1c1917;color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;}
-.btn-dark:hover{background:#000;}
-.btn-ghost{background:transparent;color:#1c1917;border:1px solid #d6d3d1;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;}
-.btn-ghost:hover{border-color:#1c1917;}
+  /* ---------- HERO (3D) ---------- */
+  .hero{
+    position:relative;
+    display:grid;grid-template-columns:1.1fr 1fr;
+    align-items:center;
+    padding:70px 6% 40px;
+    min-height:640px;
+    gap:20px;
+  }
+  .hero-text{position:relative;z-index:2;}
+  .hero .script{font-size:1.25rem;color:var(--brass-light);display:block;margin-bottom:8px;}
+  .hero h1{
+    font-family:'Marcellus',serif;
+    font-size:clamp(2.1rem,4.6vw,3.4rem);
+    font-weight:400;line-height:1.25;margin:12px 0 20px;
+  }
+  .hero h1 span{color:var(--brass-light);}
+  .hero p.sub{
+    color:var(--parchment);opacity:.75;font-size:1rem;max-width:460px;
+    margin-bottom:32px;line-height:1.95;
+  }
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn-brass,.btn-ghost{
+    padding:15px 32px;border-radius:2px;font-weight:600;font-size:.82rem;
+    letter-spacing:.05em;text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:10px;
+    transition:transform .15s ease, opacity .15s ease;
+  }
+  .btn-brass{background:var(--brass);color:var(--vault);}
+  .btn-brass:hover{transform:translateY(-2px);}
+  .btn-ghost{border:1px solid rgba(233,222,198,.3);color:var(--parchment);}
+  .btn-ghost:hover{border-color:var(--brass-light);color:var(--brass-light);}
 
-/* Filters */
-.filters{max-width:1100px;margin:0 auto;padding:0 20px 20px;display:flex;gap:10px;flex-wrap:wrap;}
-.filter-chip{border:1px solid #d6d3d1;background:#fff;border-radius:99px;padding:7px 16px;font-size:13px;color:#57534e;}
-.filter-chip.active{background:#1c1917;color:#fff;border-color:#1c1917;}
+  .hero-canvas-wrap{
+    position:relative;width:100%;height:520px;
+  }
+  #watchCanvas{width:100%;height:100%;display:block;cursor:grab;}
+  #watchCanvas:active{cursor:grabbing;}
+  .canvas-hint{
+    position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+    font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--brass);opacity:.5;
+  }
 
-/* Grid */
-.grid{max-width:1100px;margin:0 auto;padding:10px 20px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}
-.card{background:#fff;border:1px solid #e7e5e4;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s ease, box-shadow .2s ease;}
-.card:hover{transform:translateY(-3px);box-shadow:0 8px 20px -6px rgba(28,25,23,.12);}
-.card-img{aspect-ratio:1/1;background:linear-gradient(135deg,#f5f5f4,#e7e5e4);display:flex;align-items:center;justify-content:center;color:#a8a29e;overflow:hidden;}
-.card-body{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1;}
-.card-cat{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#a8a29e;}
-.card-name{font-family:'Fraunces',serif;font-weight:600;font-size:16px;line-height:1.25;}
-.card-price{font-size:15px;font-weight:700;margin-top:2px;}
-.card-actions{display:flex;gap:8px;margin-top:auto;padding-top:10px;}
-.btn-add{flex:1;background:#1c1917;color:#fff;border:none;border-radius:8px;padding:9px 0;font-size:13px;font-weight:600;}
-.btn-add:hover{background:#000;}
-.btn-wa{background:#fff;border:1px solid #d6d3d1;border-radius:8px;padding:9px 10px;display:flex;align-items:center;justify-content:center;}
-.btn-wa:hover{border-color:#1c1917;}
-.qty-row{display:flex;align-items:center;justify-content:space-between;flex:1;border:1px solid #1c1917;border-radius:8px;overflow:hidden;}
-.qty-row button{background:none;border:none;width:28px;height:32px;font-size:16px;}
-.qty-row span{font-size:13px;font-weight:600;}
+  @media(max-width:880px){
+    .hero{grid-template-columns:1fr;padding-top:40px;}
+    .hero-canvas-wrap{height:360px;order:-1;}
+    .hero-text{text-align:center;}
+    .hero p.sub{margin-inline:auto;}
+    .hero-ctas{justify-content:center;}
+  }
 
-/* Admin */
-.admin-btn{background:none;border:1px solid #d6d3d1;color:#57534e;border-radius:99px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.admin-btn:hover{border-color:#1c1917;color:#1c1917;}
-.admin-row{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #f5f5f4;align-items:center;}
-.admin-thumb{width:56px;height:56px;border-radius:8px;background:#f5f5f4;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;color:#a8a29e;position:relative;cursor:pointer;border:1px dashed #d6d3d1;}
-.admin-thumb img{width:100%;height:100%;object-fit:cover;}
-.admin-thumb input{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.admin-fields{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0;}
-.admin-fields input,.admin-fields select{border:1px solid #d6d3d1;border-radius:6px;padding:6px 8px;font-size:12px;font-family:inherit;color:#1c1917;}
-.admin-fields .row2{display:flex;gap:6px;}
-.admin-del{background:none;border:none;color:#d6d3d1;font-size:16px;flex-shrink:0;}
-.admin-del:hover{color:#e11d48;}
-.admin-add-box{margin-top:16px;padding-top:16px;border-top:2px dashed #e7e5e4;}
-.admin-export{width:100%;background:#1c1917;color:#fff;border:none;border-radius:8px;padding:13px 0;font-size:14px;font-weight:600;margin-top:6px;}
-.admin-export:hover{background:#000;}
-.admin-note{font-size:11px;color:#a8a29e;margin-top:8px;line-height:1.5;}
+  /* ---------- TRUST ---------- */
+  .trust{
+    display:flex;justify-content:center;gap:42px;flex-wrap:wrap;
+    padding:20px 6% 64px;border-bottom:1px solid var(--line);
+  }
+  .trust-item{
+    display:flex;align-items:center;gap:10px;
+    font-size:.84rem;color:var(--parchment);opacity:.8;font-weight:500;
+  }
+  .trust-item svg{width:18px;height:18px;stroke:var(--brass-light);flex-shrink:0;}
 
-/* Cart drawer */
-.overlay{position:fixed;inset:0;background:rgba(28,25,23,.4);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s;}
-.overlay.open{opacity:1;pointer-events:auto;}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:92vw;background:#fff;z-index:50;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column;box-shadow:-8px 0 24px rgba(0,0,0,.08);}
-.drawer.open{transform:translateX(0);}
-.drawer-head{padding:18px 20px;border-bottom:1px solid #e7e5e4;display:flex;justify-content:space-between;align-items:center;}
-.drawer-head h2{font-family:'Fraunces',serif;font-size:19px;}
-.drawer-close{background:none;border:none;font-size:20px;color:#78716c;}
-.drawer-body{flex:1;overflow-y:auto;padding:14px 20px;}
-.cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f5f5f4;}
-.cart-item-img{width:52px;height:52px;border-radius:8px;background:#f5f5f4;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#a8a29e;}
-.cart-item-info{flex:1;min-width:0;}
-.cart-item-name{font-size:13px;font-weight:600;}
-.cart-item-price{font-size:12px;color:#78716c;margin-top:2px;}
-.cart-item-remove{font-size:11px;color:#a8a29e;margin-top:6px;background:none;border:none;text-decoration:underline;}
-.cart-empty{text-align:center;color:#a8a29e;font-size:13px;padding:50px 0;font-style:italic;}
-.drawer-foot{padding:16px 20px;border-top:1px solid #e7e5e4;}
-.subtotal-row{display:flex;justify-content:space-between;font-size:14px;margin-bottom:12px;}
-.subtotal-row strong{font-family:'IBM Plex Mono',monospace;}
-.btn-checkout{width:100%;background:#1c1917;color:#fff;border:none;border-radius:8px;padding:13px 0;font-size:14px;font-weight:600;}
-.btn-checkout:hover{background:#000;}
-.btn-checkout:disabled{opacity:.35;cursor:not-allowed;}
+  /* ---------- PRODUCTS (3D tilt cards) ---------- */
+  .section{padding:84px 6%;}
+  .section-head{text-align:center;margin-bottom:54px;}
+  .section-head .script{display:block;font-size:1.15rem;margin-bottom:6px;}
+  .section-head h2{
+    font-family:'Marcellus',serif;font-weight:400;
+    font-size:clamp(1.8rem,4.5vw,2.5rem);
+  }
+  .section-head h2 span{color:var(--brass-light);}
 
-/* Checkout form */
-.checkout-fields{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
-.checkout-fields input,.checkout-fields textarea{border:1px solid #d6d3d1;border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;color:#1c1917;}
-.checkout-fields input:focus,.checkout-fields textarea:focus{outline:none;border-color:#1c1917;}
-.checkout-fields label{font-size:11px;color:#78716c;margin-bottom:-4px;}
-.checkout-back{font-size:12px;color:#78716c;background:none;border:none;text-decoration:underline;margin-bottom:10px;}
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:26px;max-width:1100px;margin:0 auto;
+    perspective:1200px;
+  }
+  .card{
+    background:linear-gradient(160deg, var(--vault-2), var(--vault));
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:40px 26px;
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    transform-style:preserve-3d;
+    transition:transform .1s ease, box-shadow .3s ease, border-color .3s ease;
+    will-change:transform;
+  }
+  .card:hover{
+    border-color:var(--brass);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.6), 0 0 0 1px rgba(176,141,87,.2);
+  }
+  .card .icon-wrap{
+    width:82px;height:82px;border-radius:50%;
+    border:1.5px solid var(--brass);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:22px;
+    transform:translateZ(30px);
+  }
+  .card .icon-wrap svg{width:36px;height:36px;stroke:var(--brass-light);}
+  .card h3{font-family:'Marcellus',serif;font-size:1.3rem;font-weight:400;margin-bottom:10px;transform:translateZ(20px);}
+  .card p{color:var(--parchment);opacity:.7;font-size:.86rem;line-height:1.9;margin-bottom:20px;min-height:56px;transform:translateZ(10px);}
+  .card .price{
+    font-family:'Cormorant Garamond',serif;font-style:italic;
+    color:var(--brass-light);font-weight:600;font-size:1.05rem;margin-bottom:20px;
+    transform:translateZ(15px);
+  }
+  .card-btn{
+    width:100%;padding:12px;border-radius:2px;
+    background:transparent;border:1px solid var(--brass);
+    color:var(--brass-light);font-weight:600;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;
+    transition:background .15s ease,color .15s ease;
+    transform:translateZ(25px);
+  }
+  .card-btn:hover{background:var(--brass);color:var(--vault);}
 
-/* Footer */
-footer{border-top:1px solid #e7e5e4;padding:34px 20px;text-align:center;color:#a8a29e;font-size:12px;margin-top:20px;}
-footer .foot-links{display:flex;gap:16px;justify-content:center;margin-bottom:10px;font-size:13px;color:#57534e;}
+  /* ---------- WHY ---------- */
+  .why{background:var(--vault-2);}
+  .why-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:36px;max-width:1000px;margin:0 auto;
+  }
+  .why-item{text-align:center;padding:10px;}
+  .why-item .num{
+    font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--brass-light);
+    font-size:1.7rem;font-weight:600;display:block;margin-bottom:12px;
+  }
+  .why-item h4{font-family:'Marcellus',serif;font-size:1.15rem;font-weight:400;margin-bottom:10px;}
+  .why-item p{color:var(--parchment);opacity:.7;font-size:.86rem;line-height:1.9;}
 
-@media(max-width:640px){
-  nav{display:none;}
-  .hero h1{font-size:28px;}
-}
+  /* ---------- FINAL CTA ---------- */
+  .final-cta{text-align:center;padding:96px 6%;}
+  .final-cta .script{display:block;font-size:1.2rem;margin-bottom:10px;}
+  .final-cta h2{
+    font-family:'Marcellus',serif;font-weight:400;
+    font-size:clamp(1.8rem,5vw,2.6rem);margin-bottom:20px;
+  }
+  .final-cta p{color:var(--parchment);opacity:.75;margin-bottom:34px;}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding:36px 6%;border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+  }
+  .footer-links{display:flex;gap:22px;}
+  .footer-links a{color:var(--parchment);opacity:.7;font-size:.82rem;font-weight:500;}
+  .footer-links a:hover{opacity:1;color:var(--brass-light);}
+  footer .fine{color:var(--brass);opacity:.6;font-size:.7rem;letter-spacing:.08em;}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="headwrap">
-    <div class="brand">
-      <div class="dial"></div>
-      <span class="brand-name">B7R</span>
-    </div>
-    <nav>
-      <a href="#catalogue">Collection</a>
-      <a href="#" onclick="window.open('https://instagram.com/b7r_watch','_blank');return false;">Instagram</a>
-      <a href="#footer">Contact</a>
-    </nav>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <button class="cart-btn" onclick="openCart()">
-        🛍 Panier
-        <span class="cart-badge" id="cartBadge">0</span>
-      </button>
-      <button class="admin-btn" onclick="openAdmin()" title="Gérer les produits">⚙</button>
-    </div>
-  </div>
-</header>
+<nav>
+  <div class="logo"><span class="mono">B7R</span>B7R WATCH</div>
+  <a class="nav-cta" href="#order" id="navOrder">Commander</a>
+</nav>
 
 <section class="hero">
-  <h1 class="serif">Montres & lunettes,<br>livrées chez vous.</h1>
-  <p>Paiement à la livraison partout au Maroc. Choisissez vos pièces, on s'occupe du reste.</p>
-  <div class="hero-cta">
-    <a href="#catalogue" class="btn-dark">Voir la collection</a>
-    <a href="#" class="btn-ghost" onclick="orderViaWhatsAppGeneral();return false;">Commander sur WhatsApp</a>
+  <div class="hero-text">
+    <span class="script">Bienvenue dans</span>
+    <div class="eyebrow" style="margin-bottom:10px;">L'Atelier du Temps</div>
+    <h1>Chaque montre raconte<br><span>une histoire à porter</span></h1>
+    <p class="sub">Une collection façonnée pour ceux qui voient le temps comme un art. Faites glisser la montre pour l'observer sous tous ses angles — elle indique l'heure réelle.</p>
+    <div class="hero-ctas">
+      <a href="#order" class="btn-brass">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.79.47 3.47 1.29 4.93L2 22l5.29-1.38c1.4.76 3 1.2 4.71 1.2 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
+        Commander sur WhatsApp
+      </a>
+      <a href="#products" class="btn-ghost">Voir la collection</a>
+    </div>
+  </div>
+
+  <div class="hero-canvas-wrap">
+    <canvas id="watchCanvas"></canvas>
+    <div class="canvas-hint">Glissez pour faire pivoter</div>
   </div>
 </section>
 
-<div class="filters" id="filters"></div>
-<div class="grid" id="catalogue"></div>
-
-<footer id="footer">
-  <div class="foot-links">
-    <a href="#" onclick="window.open('https://instagram.com/b7r_watch','_blank');return false;">Instagram @b7r_watch</a>
-    <a href="#" onclick="orderViaWhatsAppGeneral();return false;">WhatsApp</a>
+<div class="trust">
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 2l3 7h7l-5.5 4.5L18.5 22 12 17l-6.5 5 2-8.5L2 9h7z"/></svg>
+    Pièces choisies avec exigence
   </div>
-  <div>Paiement à la livraison (COD) · Livraison partout au Maroc · B7R © ${new Date().getFullYear ? "" : ""}</div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    Contrôlées avant chaque envoi
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M3 7h13v10H3zM16 10h4l3 3v4h-7zM6 21a2 2 0 100-4 2 2 0 000 4zM17 21a2 2 0 100-4 2 2 0 000 4z"/></svg>
+    Livrées partout au Maroc
+  </div>
+</div>
+
+<section class="section" id="products">
+  <div class="section-head">
+    <span class="script">La collection</span>
+    <h2>Choisissez <span>votre pièce</span></h2>
+  </div>
+
+  <div class="grid" id="cardGrid">
+    <div class="card">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/><path d="M9 2h6M9 22h6"/></svg>
+      </div>
+      <h3>Montre classique</h3>
+      <p>Lignes intemporelles, bracelet cuir ou métal — pour les instants qui comptent.</p>
+      <div class="price">À partir de 250 DH</div>
+      <button class="card-btn" onclick="orderProduct('Montre classique')">Commander cette pièce</button>
+    </div>
+
+    <div class="card">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/><path d="M4 4l2 2M20 4l-2 2"/></svg>
+      </div>
+      <h3>Montre sport</h3>
+      <p>Robuste et précise, conçue pour suivre chacun de vos mouvements.</p>
+      <div class="price">À partir de 280 DH</div>
+      <button class="card-btn" onclick="orderProduct('Montre sport')">Commander cette pièce</button>
+    </div>
+
+    <div class="card">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="3" y="8" width="18" height="10" rx="1"/><path d="M7 8V6a2 2 0 012-2h6a2 2 0 012 2v2"/></svg>
+      </div>
+      <h3>Bracelet & chaîne</h3>
+      <p>Des détails en métal qui signent une allure, sans jamais l'alourdir.</p>
+      <div class="price">À partir de 90 DH</div>
+      <button class="card-btn" onclick="orderProduct('Bracelet et chaîne')">Commander cette pièce</button>
+    </div>
+
+    <div class="card">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M2 12c1.5-3 4-4 6-4s3 1 4 1 2-1 4-1 4.5 1 6 4c-1.5 3-4 4-6 4s-2-1-4-1-3 1-4 1-4.5-1-6-4z"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/></svg>
+      </div>
+      <h3>Lunettes de soleil</h3>
+      <p>Une ombre élégante pour les journées où le soleil ne pardonne pas.</p>
+      <div class="price">À partir de 70 DH</div>
+      <button class="card-btn" onclick="orderProduct('Lunettes de soleil')">Commander cette pièce</button>
+    </div>
+  </div>
+</section>
+
+<section class="section why">
+  <div class="section-head">
+    <span class="script">Notre promesse</span>
+    <h2>L'exigence d'un artisan</h2>
+  </div>
+  <div class="why-grid">
+    <div class="why-item">
+      <span class="num">I</span>
+      <h4>Un œil averti</h4>
+      <p>Chaque pièce passe par une sélection rigoureuse avant de rejoindre l'atelier.</p>
+    </div>
+    <div class="why-item">
+      <span class="num">II</span>
+      <h4>Un prix honnête</h4>
+      <p>La qualité sans les marges superflues, ni les intermédiaires inutiles.</p>
+    </div>
+    <div class="why-item">
+      <span class="num">III</span>
+      <h4>Une relation directe</h4>
+      <p>Un message, une réponse personnelle — jamais un robot entre vous et nous.</p>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta" id="order">
+  <span class="script">Le temps n'attend pas</span>
+  <h2>Votre montre vous attend</h2>
+  <p>Écrivez-nous, et nous vous guidons vers la pièce qui vous ressemble.</p>
+  <a href="#" class="btn-brass" id="mainOrderBtn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.79.47 3.47 1.29 4.93L2 22l5.29-1.38c1.4.76 3 1.2 4.71 1.2 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2z"/></svg>
+    Écrire sur WhatsApp
+  </a>
+</section>
+
+<footer>
+  <div class="logo" style="font-size:1.15rem;"><span class="mono">B7R</span>B7R WATCH</div>
+  <div class="footer-links">
+    <a href="#" id="igLink">Instagram</a>
+    <a href="#" id="fbLink">Facebook</a>
+    <a href="#" id="waLink">WhatsApp</a>
+  </div>
+  <div class="fine">L'ATELIER DU TEMPS — MAROC</div>
 </footer>
 
-<div class="overlay" id="overlay" onclick="closeCart()"></div>
-<div class="drawer" id="drawer">
-  <div class="drawer-head">
-    <h2 class="serif" id="drawerTitle">Votre panier</h2>
-    <button class="drawer-close" onclick="closeCart()">✕</button>
-  </div>
-  <div class="drawer-body" id="drawerBody"></div>
-  <div class="drawer-foot" id="drawerFoot"></div>
-</div>
-
-<div class="overlay" id="adminOverlay" onclick="closeAdmin()"></div>
-<div class="drawer" id="adminDrawer" style="width:420px;">
-  <div class="drawer-head">
-    <h2 class="serif">Gérer les produits</h2>
-    <button class="drawer-close" onclick="closeAdmin()">✕</button>
-  </div>
-  <div class="drawer-body" id="adminBody"></div>
-</div>
-
 <script>
-// Mettez votre numéro WhatsApp au format international SANS le "+" (ex: 212612345678)
-const WHATSAPP_NUMBER = "212600000000";
+  // ===== WhatsApp / Instagram links =====
+  const WHATSAPP_NUMBER = "212770053200";
+  const INSTAGRAM_URL = "https://instagram.com/b7r_watch";
+  const FACEBOOK_URL = "#";
 
-/*PRODUCTS_START*/
-// Vos produits — modifiez-les ici, ou plus simplement via le bouton ⚙ "Gérer les produits" du site.
-const PRODUCTS = [
-  { id: "p1", name: "Hublot Acier", price: 150, category: "Montres", icon: "⌚", image: "" },
-  { id: "p2", name: "Patek Philippe Silicone", price: 150, category: "Montres", icon: "⌚", image: "" },
-  { id: "p3", name: "Casio Classic", price: 100, category: "Montres", icon: "⌚", image: "" },
-  { id: "p4", name: "Tissot", price: 140, category: "Montres", icon: "⌚", image: "" },
-  { id: "p5", name: "G-Shock Casio", price: 130, category: "Montres", icon: "⌚", image: "" },
-  { id: "p6", name: "Patek Philippe Cuir", price: 140, category: "Montres", icon: "⌚", image: "" },
-  { id: "p7", name: "Rolex Daytona", price: 190, category: "Montres", icon: "⌚", image: "" },
-  { id: "p8", name: "Rolex GMT", price: 160, category: "Montres", icon: "⌚", image: "" },
-  { id: "p9", name: "Lunette Classique", price: 80, category: "Lunettes", icon: "🕶", image: "" },
-  { id: "p10", name: "Lunette Cartier", price: 80, category: "Lunettes", icon: "🕶", image: "" },
-];
-/*PRODUCTS_END*/
-
-const CART_KEY = "b7r_store_cart";
-let cart = loadCart();
-let activeCategory = "Tous";
-let checkoutMode = false;
-
-function loadCart(){
-  try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {}; }
-  catch(e){ return {}; }
-}
-function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateBadge(); }
-function fmt(n){ return Number(n).toLocaleString("fr-FR") + " DH"; }
-
-function updateBadge(){
-  const count = Object.values(cart).reduce((s,q)=>s+q,0);
-  document.getElementById("cartBadge").textContent = count;
-}
-
-function renderFilters(){
-  const cats = ["Tous", ...new Set(PRODUCTS.map(p=>p.category))];
-  document.getElementById("filters").innerHTML = cats.map(c=>
-    `<button class="filter-chip ${activeCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</button>`
-  ).join("");
-}
-function setCategory(c){ activeCategory = c; renderFilters(); renderGrid(); }
-window.setCategory = setCategory;
-
-function renderGrid(){
-  const list = activeCategory==="Tous" ? PRODUCTS : PRODUCTS.filter(p=>p.category===activeCategory);
-  document.getElementById("catalogue").innerHTML = list.map(p=>{
-    const qty = cart[p.id] || 0;
-    return `<div class="card">
-      <div class="card-img" style="font-size:52px;">${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">` : p.icon}</div>
-      <div class="card-body">
-        <span class="card-cat">${p.category}</span>
-        <span class="card-name">${p.name}</span>
-        <span class="card-price">${fmt(p.price)}</span>
-        <div class="card-actions">
-          ${qty>0 ? `
-            <div class="qty-row">
-              <button onclick="changeQty('${p.id}',-1)">−</button>
-              <span>${qty}</span>
-              <button onclick="changeQty('${p.id}',1)">+</button>
-            </div>
-          ` : `<button class="btn-add" onclick="changeQty('${p.id}',1)">Ajouter</button>`}
-          <button class="btn-wa" title="Commander directement sur WhatsApp" onclick="orderSingleViaWhatsApp('${p.id}')">💬</button>
-        </div>
-      </div>
-    </div>`;
-  }).join("");
-}
-
-function changeQty(id, delta){
-  const next = (cart[id]||0) + delta;
-  if(next <= 0){ delete cart[id]; } else { cart[id] = next; }
-  saveCart(); renderGrid(); renderDrawer();
-}
-window.changeQty = changeQty;
-
-function cartItems(){
-  return Object.entries(cart).map(([id,qty])=>{
-    const p = PRODUCTS.find(x=>x.id===id);
-    return p ? {...p, qty} : null;
-  }).filter(Boolean);
-}
-function cartTotal(){
-  return cartItems().reduce((s,i)=>s+i.price*i.qty, 0);
-}
-
-function openCart(){
-  checkoutMode = false;
-  document.getElementById("overlay").classList.add("open");
-  document.getElementById("drawer").classList.add("open");
-  renderDrawer();
-}
-function closeCart(){
-  document.getElementById("overlay").classList.remove("open");
-  document.getElementById("drawer").classList.remove("open");
-}
-window.openCart = openCart;
-window.closeCart = closeCart;
-
-function renderDrawer(){
-  const items = cartItems();
-  document.getElementById("drawerTitle").textContent = checkoutMode ? "Vos informations" : "Votre panier";
-
-  if(checkoutMode){
-    document.getElementById("drawerBody").innerHTML = `
-      <button class="checkout-back" onclick="checkoutMode=false;renderDrawer();">← Retour au panier</button>
-      ${items.map(i=>`<div class="cart-item">
-        <div class="cart-item-img" style="font-size:24px;">${i.icon}</div>
-        <div class="cart-item-info">
-          <div class="cart-item-name">${i.name} × ${i.qty}</div>
-          <div class="cart-item-price">${fmt(i.price*i.qty)}</div>
-        </div>
-      </div>`).join("")}
-      <div class="checkout-fields">
-        <label>Nom complet</label>
-        <input id="ckName" placeholder="Votre nom">
-        <label>Téléphone</label>
-        <input id="ckPhone" placeholder="06XXXXXXXX">
-        <label>Ville</label>
-        <input id="ckCity" placeholder="Ville">
-        <label>Adresse</label>
-        <textarea id="ckAddress" rows="2" placeholder="Adresse de livraison"></textarea>
-        <label>Note (optionnel)</label>
-        <textarea id="ckNote" rows="2" placeholder="Précisions sur la commande..."></textarea>
-      </div>
-    `;
-    document.getElementById("drawerFoot").innerHTML = `
-      <div class="subtotal-row"><span>Total</span><strong>${fmt(cartTotal())}</strong></div>
-      <button class="btn-checkout" onclick="confirmOrder()">Confirmer la commande (COD)</button>
-    `;
-    return;
+  function buildWaLink(text){
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
   }
-
-  if(items.length===0){
-    document.getElementById("drawerBody").innerHTML = `<div class="cart-empty">Votre panier est vide.</div>`;
-    document.getElementById("drawerFoot").innerHTML = "";
-    return;
+  function orderProduct(name){
+    window.open(buildWaLink(`Bonjour, je souhaite commander : ${name}`), '_blank');
   }
+  document.getElementById('mainOrderBtn').href = buildWaLink('Bonjour, je souhaite en savoir plus sur votre collection');
+  document.getElementById('navOrder').href = buildWaLink('Bonjour, je souhaite commander un modèle');
+  document.getElementById('waLink').href = buildWaLink('Bonjour');
+  document.getElementById('igLink').href = INSTAGRAM_URL;
+  document.getElementById('fbLink').href = FACEBOOK_URL;
 
-  document.getElementById("drawerBody").innerHTML = items.map(i=>`
-    <div class="cart-item">
-      <div class="cart-item-img" style="font-size:24px;">${i.icon}</div>
-      <div class="cart-item-info">
-        <div class="cart-item-name">${i.name}</div>
-        <div class="cart-item-price">${fmt(i.price)} × ${i.qty}</div>
-        <button class="cart-item-remove" onclick="changeQty('${i.id}',-${i.qty})">Retirer</button>
-      </div>
-    </div>
-  `).join("");
-
-  document.getElementById("drawerFoot").innerHTML = `
-    <div class="subtotal-row"><span>Sous-total</span><strong>${fmt(cartTotal())}</strong></div>
-    <button class="btn-checkout" onclick="checkoutMode=true;renderDrawer();">Passer la commande</button>
-  `;
-}
-
-function confirmOrder(){
-  const name = document.getElementById("ckName").value.trim();
-  const phone = document.getElementById("ckPhone").value.trim();
-  const city = document.getElementById("ckCity").value.trim();
-  const address = document.getElementById("ckAddress").value.trim();
-  const note = document.getElementById("ckNote").value.trim();
-
-  if(!name || !phone || !city){
-    alert("Merci de remplir au moins le nom, le téléphone et la ville.");
-    return;
-  }
-
-  const items = cartItems();
-  let msg = `Nouvelle commande B7R\n\n`;
-  items.forEach(i=>{ msg += `• ${i.name} × ${i.qty} — ${fmt(i.price*i.qty)}\n`; });
-  msg += `\nTotal : ${fmt(cartTotal())}\n\n`;
-  msg += `Nom : ${name}\nTéléphone : ${phone}\nVille : ${city}\nAdresse : ${address}\n`;
-  if(note) msg += `Note : ${note}\n`;
-  msg += `\nPaiement à la livraison (COD)`;
-
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-
-  cart = {}; saveCart(); checkoutMode = false; renderGrid(); renderDrawer(); closeCart();
-}
-window.confirmOrder = confirmOrder;
-
-function orderSingleViaWhatsApp(id){
-  const p = PRODUCTS.find(x=>x.id===id);
-  if(!p) return;
-  const msg = `Bonjour, je veux commander :\n• ${p.name} — ${fmt(p.price)}\n\nMerci de me contacter pour la livraison.`;
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-}
-window.orderSingleViaWhatsApp = orderSingleViaWhatsApp;
-
-function orderViaWhatsAppGeneral(){
-  const msg = "Bonjour, je suis intéressé(e) par vos produits B7R. Pouvez-vous m'aider à choisir ?";
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
-}
-window.orderViaWhatsAppGeneral = orderViaWhatsAppGeneral;
-
-/* ================= ADMIN — gérer les produits et leurs photos ================= */
-const PRODUCTS_KEY = "b7r_store_products";
-
-(function loadSavedProducts(){
-  try{
-    const saved = JSON.parse(localStorage.getItem(PRODUCTS_KEY));
-    if(saved && Array.isArray(saved) && saved.length){
-      PRODUCTS.length = 0;
-      saved.forEach(p => PRODUCTS.push(p));
-    }
-  }catch(e){}
-})();
-
-function saveProducts(){
-  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(PRODUCTS));
-}
-
-function openAdmin(){
-  document.getElementById("adminOverlay").classList.add("open");
-  document.getElementById("adminDrawer").classList.add("open");
-  renderAdmin();
-}
-function closeAdmin(){
-  document.getElementById("adminOverlay").classList.remove("open");
-  document.getElementById("adminDrawer").classList.remove("open");
-}
-window.openAdmin = openAdmin;
-window.closeAdmin = closeAdmin;
-
-// Redimensionne et compresse la photo choisie (PC ou téléphone) avant de la stocker,
-// pour que le fichier final reste léger — aucun lien externe n'est nécessaire.
-function readImageFile(file, callback){
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const img = new Image();
-    img.onload = () => {
-      const maxW = 700;
-      const scale = Math.min(1, maxW / img.width);
-      const canvas = document.createElement("canvas");
-      canvas.width = Math.round(img.width * scale);
-      canvas.height = Math.round(img.height * scale);
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      callback(canvas.toDataURL("image/jpeg", 0.82));
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function onAdminPhotoPicked(input, id){
-  const file = input.files[0];
-  if(!file) return;
-  readImageFile(file, (dataUrl) => {
-    if(id === "new"){
-      newProductDraft.image = dataUrl;
-    } else {
-      const p = PRODUCTS.find(x=>x.id===id);
-      if(p) p.image = dataUrl;
-    }
-    saveProducts(); renderAdmin(); renderGrid();
+  // ===== 3D tilt effect on product cards =====
+  document.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('mousemove', (e)=>{
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width/2, cy = rect.height/2;
+      const rotY = ((x - cx)/cx) * 10;
+      const rotX = -((y - cy)/cy) * 10;
+      card.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', ()=>{
+      card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0)';
+    });
   });
-}
-window.onAdminPhotoPicked = onAdminPhotoPicked;
 
-function updateProductField(id, field, value){
-  const p = PRODUCTS.find(x=>x.id===id);
-  if(!p) return;
-  p[field] = field === "price" ? Number(value) : value;
-  saveProducts(); renderGrid(); renderFilters();
-}
-window.updateProductField = updateProductField;
+  // ===== Three.js real-time 3D watch =====
+  (function initWatch(){
+    const canvas = document.getElementById('watchCanvas');
+    const wrap = canvas.parentElement;
+    const scene = new THREE.Scene();
 
-function deleteProduct(id){
-  const idx = PRODUCTS.findIndex(x=>x.id===id);
-  if(idx === -1) return;
-  if(!confirm("Supprimer ce produit ?")) return;
-  PRODUCTS.splice(idx, 1);
-  saveProducts(); renderAdmin(); renderGrid(); renderFilters();
-}
-window.deleteProduct = deleteProduct;
+    const camera = new THREE.PerspectiveCamera(35, wrap.clientWidth / wrap.clientHeight, 0.1, 100);
+    camera.position.set(0, 0.4, 6.2);
 
-let newProductDraft = { name: "", price: "", category: "Montres", image: "" };
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
 
-function updateDraftField(field, value){
-  newProductDraft[field] = field === "price" ? value : value;
-}
-window.updateDraftField = updateDraftField;
+    // Lights
+    scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+    const key = new THREE.PointLight(0xE3C68A, 1.4, 20);
+    key.position.set(4, 4, 5);
+    scene.add(key);
+    const rim = new THREE.PointLight(0x8899ff, 0.5, 20);
+    rim.position.set(-5, -2, -3);
+    scene.add(rim);
 
-function addNewProduct(){
-  if(!newProductDraft.name || !newProductDraft.price){
-    alert("Merci de remplir au moins le nom et le prix.");
-    return;
-  }
-  PRODUCTS.push({
-    id: "p" + Date.now(),
-    name: newProductDraft.name,
-    price: Number(newProductDraft.price),
-    category: newProductDraft.category || "Autre",
-    icon: "⌚",
-    image: newProductDraft.image || "",
-  });
-  newProductDraft = { name: "", price: "", category: "Montres", image: "" };
-  saveProducts(); renderAdmin(); renderGrid(); renderFilters();
-}
-window.addNewProduct = addNewProduct;
+    const watch = new THREE.Group();
+    scene.add(watch);
 
-function renderAdmin(){
-  const cats = [...new Set(PRODUCTS.map(p=>p.category))];
-  document.getElementById("adminBody").innerHTML = `
-    ${PRODUCTS.map(p => `
-      <div class="admin-row">
-        <label class="admin-thumb">
-          ${p.image ? `<img src="${p.image}">` : (p.icon || "📷")}
-          <input type="file" accept="image/*" onchange="onAdminPhotoPicked(this,'${p.id}')">
-        </label>
-        <div class="admin-fields">
-          <input value="${p.name.replace(/"/g,'&quot;')}" onchange="updateProductField('${p.id}','name',this.value)" placeholder="Nom">
-          <div class="row2">
-            <input type="number" value="${p.price}" onchange="updateProductField('${p.id}','price',this.value)" placeholder="Prix" style="width:80px;">
-            <input value="${p.category}" onchange="updateProductField('${p.id}','category',this.value)" placeholder="Catégorie" list="catList">
-          </div>
-        </div>
-        <button class="admin-del" onclick="deleteProduct('${p.id}')">✕</button>
-      </div>
-    `).join("")}
-    <datalist id="catList">${cats.map(c=>`<option value="${c}">`).join("")}</datalist>
+    const brassMat = new THREE.MeshStandardMaterial({ color:0xB08D57, metalness:0.9, roughness:0.28 });
+    const darkMat = new THREE.MeshStandardMaterial({ color:0x121212, metalness:0.6, roughness:0.4 });
+    const faceMat = new THREE.MeshStandardMaterial({ color:0x17130E, metalness:0.3, roughness:0.6 });
+    const handMat = new THREE.MeshStandardMaterial({ color:0xE3C68A, metalness:0.8, roughness:0.3 });
 
-    <div class="admin-add-box">
-      <div class="admin-row" style="border:none;padding-top:0;">
-        <label class="admin-thumb">
-          ${newProductDraft.image ? `<img src="${newProductDraft.image}">` : "📷"}
-          <input type="file" accept="image/*" onchange="onAdminPhotoPicked(this,'new')">
-        </label>
-        <div class="admin-fields">
-          <input id="draftName" value="${newProductDraft.name}" oninput="updateDraftField('name',this.value)" placeholder="Nom du nouveau produit">
-          <div class="row2">
-            <input id="draftPrice" type="number" value="${newProductDraft.price}" oninput="updateDraftField('price',this.value)" placeholder="Prix" style="width:80px;">
-            <input id="draftCategory" value="${newProductDraft.category}" oninput="updateDraftField('category',this.value)" placeholder="Catégorie" list="catList">
-          </div>
-        </div>
-      </div>
-      <button class="btn-add" style="width:100%;padding:10px 0;" onclick="addNewProduct()">+ Ajouter ce produit</button>
-    </div>
+    // Outer bezel
+    const bezel = new THREE.Mesh(new THREE.TorusGeometry(1.7, 0.16, 32, 64), brassMat);
+    watch.add(bezel);
 
-    <button class="admin-export" onclick="exportSite()">💾 Télécharger le site mis à jour</button>
-    <p class="admin-note">Cliquez sur une photo pour la changer (depuis votre PC ou téléphone). Une fois vos produits prêts, téléchargez le fichier et remplacez store.html dans votre GitHub — vos visiteurs verront directement les nouvelles photos, sans aucun lien externe.</p>
-  `;
-}
+    // Case body
+    const caseBody = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.55, 0.5, 64), darkMat);
+    caseBody.rotation.x = Math.PI/2;
+    watch.add(caseBody);
 
-// Reconstruit le fichier HTML complet avec vos produits (et photos) à jour, et le télécharge.
-function exportSite(){
-  const html = document.documentElement.outerHTML;
-  const newBlock = "/*PRODUCTS_START*/\nconst PRODUCTS = " + JSON.stringify(PRODUCTS, null, 2) + ";\n/*PRODUCTS_END*/";
-  const updated = html.replace(/\/\*PRODUCTS_START\*\/[\s\S]*?\/\*PRODUCTS_END\*\//, newBlock);
-  const blob = new Blob(["<!DOCTYPE html>\n" + updated], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = "store.html"; a.click();
-  URL.revokeObjectURL(url);
-}
-window.exportSite = exportSite;
+    // Face
+    const face = new THREE.Mesh(new THREE.CircleGeometry(1.5, 64), faceMat);
+    face.position.z = 0.26;
+    watch.add(face);
 
-renderFilters();
-renderGrid();
-updateBadge();
+    // Hour markers
+    for(let i=0;i<12;i++){
+      const angle = (i/12) * Math.PI*2;
+      const marker = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.16, 0.02), handMat);
+      marker.position.set(Math.sin(angle)*1.28, Math.cos(angle)*1.28, 0.28);
+      marker.rotation.z = -angle;
+      watch.add(marker);
+    }
+
+    // Crown
+    const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.22, 16), brassMat);
+    crown.rotation.z = Math.PI/2;
+    crown.position.set(1.75, 0, 0);
+    watch.add(crown);
+
+    // Hands (real time)
+    const hourHand = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.75, 0.03), handMat);
+    hourHand.geometry.translate(0, 0.375, 0);
+    hourHand.position.z = 0.32;
+    watch.add(hourHand);
+
+    const minuteHand = new THREE.Mesh(new THREE.BoxGeometry(0.045, 1.05, 0.03), handMat);
+    minuteHand.geometry.translate(0, 0.525, 0);
+    minuteHand.position.z = 0.35;
+    watch.add(minuteHand);
+
+    const secondHand = new THREE.Mesh(new THREE.BoxGeometry(0.02, 1.15, 0.02), new THREE.MeshStandardMaterial({color:0x8B2E28, metalness:0.5, roughness:0.4}));
+    secondHand.geometry.translate(0, 0.4, 0);
+    secondHand.position.z = 0.38;
+    watch.add(secondHand);
+
+    const centerCap = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), brassMat);
+    centerCap.position.z = 0.4;
+    watch.add(centerCap);
+
+    // Strap hint (two bars top/bottom)
+    const strapMat = new THREE.MeshStandardMaterial({ color:0x0A0908, metalness:0.2, roughness:0.8 });
+    const strapTop = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.1, 0.35), strapMat);
+    strapTop.position.set(0, 2.3, -0.1);
+    watch.add(strapTop);
+    const strapBottom = strapTop.clone();
+    strapBottom.position.y = -2.3;
+    watch.add(strapBottom);
+
+    watch.rotation.x = 0.15;
+
+    function updateHands(){
+      const now = new Date();
+      const h = now.getHours() % 12;
+      const m = now.getMinutes();
+      const s = now.getSeconds();
+      hourHand.rotation.z = -((h + m/60) / 12) * Math.PI*2;
+      minuteHand.rotation.z = -((m + s/60) / 60) * Math.PI*2;
+      secondHand.rotation.z = -(s / 60) * Math.PI*2;
+    }
+
+    // Interaction: drag to rotate, auto-rotate when idle
+    let isDragging = false;
+    let prevX = 0, prevY = 0;
+    let targetRotY = 0.3, targetRotX = 0.15;
+    let autoRotate = true;
+
+    function pointerDown(x,y){ isDragging = true; autoRotate = false; prevX = x; prevY = y; }
+    function pointerMove(x,y){
+      if(!isDragging) return;
+      const dx = x - prevX, dy = y - prevY;
+      targetRotY += dx * 0.008;
+      targetRotX += dy * 0.008;
+      targetRotX = Math.max(-0.8, Math.min(0.8, targetRotX));
+      prevX = x; prevY = y;
+    }
+    function pointerUp(){ isDragging = false; }
+
+    canvas.addEventListener('mousedown', e=>pointerDown(e.clientX, e.clientY));
+    window.addEventListener('mousemove', e=>pointerMove(e.clientX, e.clientY));
+    window.addEventListener('mouseup', pointerUp);
+    canvas.addEventListener('touchstart', e=>{ const t=e.touches[0]; pointerDown(t.clientX, t.clientY); }, {passive:true});
+    canvas.addEventListener('touchmove', e=>{ const t=e.touches[0]; pointerMove(t.clientX, t.clientY); }, {passive:true});
+    canvas.addEventListener('touchend', pointerUp);
+
+    function animate(){
+      requestAnimationFrame(animate);
+      updateHands();
+      if(autoRotate){ targetRotY += 0.0025; }
+      watch.rotation.y += (targetRotY - watch.rotation.y) * 0.08;
+      watch.rotation.x += (targetRotX - watch.rotation.x) * 0.08;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    function onResize(){
+      const w = wrap.clientWidth, h = wrap.clientHeight;
+      camera.aspect = w/h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+    window.addEventListener('resize', onResize);
+  })();
 </script>
+
 </body>
 </html>
