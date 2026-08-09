@@ -240,6 +240,63 @@
   .cart-subtotal{display:flex;justify-content:space-between;font-size:1rem;margin-bottom:18px;}
   .cart-subtotal .amt{font-family:'Cormorant Garamond',serif;font-size:1.4rem;}
 
+  /* ---------- Admin page ---------- */
+  #view-admin{display:none;}
+  .admin-wrap{padding:60px 5% 100px;max-width:900px;margin:0 auto;}
+  .admin-head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:40px;flex-wrap:wrap;}
+  .admin-head h2{font-size:clamp(1.7rem,3vw,2.3rem);margin:10px 0 12px;}
+  .admin-head p{color:var(--muted);font-size:0.88rem;max-width:420px;line-height:1.6;}
+  .admin-row{
+    display:grid;grid-template-columns:120px 1fr 160px;gap:24px;align-items:center;
+    padding:24px 0;border-bottom:1px solid var(--line);
+  }
+  .admin-row .ar-images{display:flex;gap:10px;}
+  .admin-slot{position:relative;width:64px;height:64px;border:1px solid var(--line);border-radius:2px;overflow:hidden;cursor:pointer;}
+  .admin-slot img{width:100%;height:100%;object-fit:cover;}
+  .admin-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+  .admin-slot .slot-hint{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,0.55);color:#fff;font-size:0.6rem;text-align:center;
+    opacity:0;transition:opacity .2s;pointer-events:none;text-transform:uppercase;letter-spacing:0.04em;
+  }
+  .admin-slot:hover .slot-hint{opacity:1;}
+  .admin-row .ar-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;}
+  .admin-row .ar-cat{color:var(--muted);font-size:0.78rem;margin-top:2px;}
+  .admin-row .ar-price{display:flex;flex-direction:column;gap:6px;}
+  .admin-row .ar-price label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+  .admin-row .ar-price input{
+    background:var(--card);border:1px solid var(--line);color:var(--ivory);
+    padding:10px 12px;font-family:'Jost',sans-serif;font-size:0.95rem;border-radius:2px;width:100%;
+  }
+  .admin-row .ar-price input:focus{outline:none;border-color:var(--gold);}
+  .admin-actions{display:flex;gap:16px;flex-wrap:wrap;margin-top:36px;}
+  .admin-note{color:var(--muted);font-size:0.8rem;margin-top:18px;line-height:1.6;}
+  .admin-note code{background:var(--card);padding:2px 6px;border-radius:2px;}
+  @media (max-width:700px){
+    .admin-row{grid-template-columns:1fr;gap:14px;}
+  }
+  .admin-box{
+    background:var(--card);border:1px solid var(--line);border-radius:3px;
+    padding:28px;margin-bottom:36px;
+  }
+  .admin-box h3{font-size:1.35rem;margin-bottom:18px;}
+  .admin-section-title{font-size:1.2rem;color:var(--muted);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;font-family:'Jost',sans-serif;font-weight:500;}
+  .admin-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:16px;}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+  .field label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;}
+  .field input, .field textarea{
+    background:var(--bg);border:1px solid var(--line);color:var(--ivory);
+    padding:11px 13px;font-family:'Jost',sans-serif;font-size:0.92rem;border-radius:2px;width:100%;resize:vertical;
+  }
+  .field input:focus, .field textarea:focus{outline:none;border-color:var(--gold);}
+  .admin-slot.empty{display:flex;align-items:center;justify-content:center;background:var(--bg);}
+  .admin-slot.empty .slot-plus{font-size:1.4rem;color:var(--muted);pointer-events:none;}
+  .admin-slot.empty .slot-hint{opacity:0;}
+  #newProductSlots{margin-bottom:22px;}
+  .ar-delete{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:0.7rem;padding:6px 10px;border-radius:2px;text-transform:uppercase;letter-spacing:0.04em;margin-top:10px;}
+  .ar-delete:hover{border-color:var(--gold);color:var(--ivory);}
+  .admin-security{margin-top:48px;}
+
   @media (max-width:820px){
     .hero{grid-template-columns:1fr;padding-top:40px;}
     .watch-face-wrap{order:-1;}
@@ -249,6 +306,8 @@
 </style>
 </head>
 <body>
+
+<script type="application/json" id="overridesData">{}</script>
 
 <header>
   <div class="brand"><span class="dot"></span>B7R<span class="dot"></span></div>
@@ -334,12 +393,68 @@
   </div>
 </main>
 
+<!-- ===================== VUE ADMIN (GERER PRODUITS) ===================== -->
+<main id="view-admin">
+  <div class="admin-wrap">
+    <div class="admin-head">
+      <div>
+        <span class="eyebrow">Espace propriétaire</span>
+        <h2>Gérer les produits</h2>
+        <p>Ajoutez de nouvelles montres, changez le prix ou les photos, puis enregistrez.</p>
+      </div>
+      <a href="#/" onclick="goHome()" class="btn-ghost">← Retour au site</a>
+    </div>
+
+    <!-- Ajouter un nouveau produit -->
+    <div class="admin-box">
+      <h3>Ajouter un nouveau produit</h3>
+      <div class="ar-images" id="newProductSlots"></div>
+      <div class="admin-form-grid">
+        <div class="field"><label>Nom de la montre</label><input type="text" id="newName" placeholder="Ex : Sultane"></div>
+        <div class="field"><label>Catégorie</label><input type="text" id="newCat" placeholder="Ex : Montre femme"></div>
+        <div class="field"><label>Prix (MAD)</label><input type="number" id="newPrice" min="0" step="1" placeholder="Ex : 2500"></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="newDesc" rows="3" placeholder="Décrivez la montre..."></textarea></div>
+      <div class="admin-form-grid">
+        <div class="field"><label>Mouvement</label><input type="text" id="newSpecMouvement" placeholder="Ex : Quartz suisse"></div>
+        <div class="field"><label>Diamètre boîtier</label><input type="text" id="newSpecDiametre" placeholder="Ex : 40 mm"></div>
+        <div class="field"><label>Matériau</label><input type="text" id="newSpecMateriau" placeholder="Ex : Acier inoxydable"></div>
+        <div class="field"><label>Bracelet</label><input type="text" id="newSpecBracelet" placeholder="Ex : Cuir véritable"></div>
+        <div class="field"><label>Étanchéité</label><input type="text" id="newSpecEtancheite" placeholder="Ex : 5 ATM"></div>
+        <div class="field"><label>Garantie</label><input type="text" id="newSpecGarantie" placeholder="Ex : 2 ans"></div>
+      </div>
+      <button class="btn-primary" onclick="addNewProduct()">Ajouter le produit</button>
+    </div>
+
+    <h3 class="admin-section-title">Produits existants</h3>
+    <div class="admin-list" id="adminList"></div>
+
+    <div class="admin-actions">
+      <button class="btn-primary" onclick="saveAdminChanges()">Enregistrer les modifications</button>
+      <button class="btn-ghost" onclick="downloadUpdatedSite()">Télécharger le site mis à jour</button>
+    </div>
+    <p class="admin-note">Astuce : après avoir cliqué sur « Télécharger », remplacez votre ancien fichier <code>index.html</code> par celui téléchargé sur votre hébergement, pour que tous vos clients voient les changements.</p>
+
+    <!-- Sécurité -->
+    <div class="admin-box admin-security">
+      <h3>Sécurité</h3>
+      <p class="admin-note" style="margin-top:0;">Changez le mot de passe qui protège cet espace de gestion.</p>
+      <div class="admin-form-grid">
+        <div class="field"><label>Nouveau mot de passe</label><input type="password" id="newAdminPassword" placeholder="•••••••"></div>
+      </div>
+      <button class="btn-ghost" onclick="changeAdminPassword()">Enregistrer le mot de passe</button>
+    </div>
+  </div>
+</main>
+
 <footer>
   <div>© 2026 B7R — Maison Horlogère. Tous droits réservés.</div>
   <div class="footer-contact">
     <a href="https://instagram.com/b7r_watch" target="_blank" rel="noopener">@b7r_watch</a>
     &nbsp;•&nbsp;
     <a href="https://wa.me/212770053200" target="_blank" rel="noopener">WhatsApp : 07 70 05 32 00</a>
+    &nbsp;•&nbsp;
+    <a href="#/admin" onclick="openAdmin()">Gérer les produits</a>
   </div>
 </footer>
 
@@ -412,14 +527,248 @@ const PRODUCTS = [
   }
 ];
 
+/* ---------------- Surcharges (prix/photos modifiés via l'espace admin) ---------------- */
+let OVERRIDES = {};
+let CUSTOM_PRODUCTS = [];
+(function loadOverrides(){
+  try{
+    const embedded = document.getElementById('overridesData');
+    const embeddedText = embedded ? embedded.textContent.trim() : '';
+    if(embeddedText && embeddedText !== '{}'){
+      OVERRIDES = JSON.parse(embeddedText);
+    } else {
+      const stored = localStorage.getItem('b7r_overrides');
+      if(stored) OVERRIDES = JSON.parse(stored);
+    }
+  }catch(e){ OVERRIDES = {}; }
+  CUSTOM_PRODUCTS = Array.isArray(OVERRIDES.__custom__) ? OVERRIDES.__custom__ : [];
+})();
+
+function getAdminPassword(){
+  return (OVERRIDES.__settings__ && OVERRIDES.__settings__.password) || 'b7r2026';
+}
+
+function persistOverrides(){
+  OVERRIDES.__custom__ = CUSTOM_PRODUCTS;
+  try{ localStorage.setItem('b7r_overrides', JSON.stringify(OVERRIDES)); }catch(e){}
+  const embedded = document.getElementById('overridesData');
+  if(embedded) embedded.textContent = JSON.stringify(OVERRIDES);
+}
+
+function getLiveProducts(){
+  const base = PRODUCTS.map(p => {
+    const o = OVERRIDES[p.id];
+    if(!o) return p;
+    return {
+      ...p,
+      price: (o.price !== undefined && o.price !== null && o.price !== '') ? Number(o.price) : p.price,
+      img: (o.img && o.img.filter(Boolean).length) ? o.img : p.img
+    };
+  });
+  return [...base, ...CUSTOM_PRODUCTS];
+}
+
 let cart = [];
 let currentQty = 1;
 let currentProduct = null;
+let pendingAdminImages = {};
+let newProductImages = [null, null, null];
+
+/* ---------------- Espace admin (gestion prix / photos) ---------------- */
+function renderAdmin(){
+  const products = getLiveProducts();
+  pendingAdminImages = {};
+  products.forEach(p => { pendingAdminImages[p.id] = [...p.img]; });
+
+  document.getElementById('adminList').innerHTML = products.map(p => `
+    <div class="admin-row" data-id="${p.id}">
+      <div class="ar-images">
+        ${p.img.map((src,i) => `
+          <label class="admin-slot">
+            <img src="${src}" id="adminImg-${p.id}-${i}" alt="">
+            <span class="slot-hint">Changer</span>
+            <input type="file" accept="image/*" onchange="handleImageUpload(event,'${p.id}',${i})">
+          </label>
+        `).join('')}
+      </div>
+      <div>
+        <div class="ar-name">${p.name}</div>
+        <div class="ar-cat">${p.cat}</div>
+      </div>
+      <div class="ar-price">
+        <label>Prix (MAD)</label>
+        <input type="number" id="adminPrice-${p.id}" value="${p.price}" min="0" step="1">
+        ${p.id.startsWith('custom-') ? `<button class="ar-delete" onclick="deleteCustomProduct('${p.id}')">Supprimer</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  renderNewProductSlots();
+}
+
+function handleImageUpload(event, productId, slotIndex){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    pendingAdminImages[productId][slotIndex] = e.target.result;
+    document.getElementById(`adminImg-${productId}-${slotIndex}`).src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveAdminChanges(){
+  const products = getLiveProducts();
+  products.forEach(p => {
+    const priceInput = document.getElementById(`adminPrice-${p.id}`);
+    const newPrice = priceInput ? Number(priceInput.value) : p.price;
+    const newImages = pendingAdminImages[p.id] || p.img;
+    if(p.id.startsWith('custom-')){
+      const cp = CUSTOM_PRODUCTS.find(c => c.id === p.id);
+      if(cp){ cp.price = newPrice; cp.img = newImages; }
+    } else {
+      OVERRIDES[p.id] = { price: newPrice, img: newImages };
+    }
+  });
+  persistOverrides();
+  renderGrid();
+  showToast('Modifications enregistrées');
+}
+
+function downloadUpdatedSite(){
+  saveAdminChanges();
+
+  const homeEl = document.getElementById('view-home');
+  const detailEl = document.getElementById('view-detail');
+  const adminEl = document.getElementById('view-admin');
+  const prevHome = homeEl.style.display, prevDetail = detailEl.style.display, prevAdmin = adminEl.style.display;
+
+  homeEl.style.display = 'block';
+  detailEl.style.display = 'none';
+  adminEl.style.display = 'none';
+
+  const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+  homeEl.style.display = prevHome;
+  detailEl.style.display = prevDetail;
+  adminEl.style.display = prevAdmin;
+
+  const blob = new Blob([htmlContent], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'index.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Fichier téléchargé — remplacez-le sur votre hébergement');
+}
+
+/* ---------------- Ajouter un nouveau produit ---------------- */
+function renderNewProductSlots(){
+  const wrap = document.getElementById('newProductSlots');
+  if(!wrap) return;
+  wrap.innerHTML = newProductImages.map((src,i) => `
+    <label class="admin-slot ${src ? '' : 'empty'}">
+      ${src ? `<img src="${src}" alt="">` : `<span class="slot-plus">+</span>`}
+      <span class="slot-hint">Changer</span>
+      <input type="file" accept="image/*" onchange="handleNewImageUpload(event,${i})">
+    </label>
+  `).join('');
+}
+
+function handleNewImageUpload(event, slotIndex){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    newProductImages[slotIndex] = e.target.result;
+    renderNewProductSlots();
+  };
+  reader.readAsDataURL(file);
+}
+
+function addNewProduct(){
+  const name = document.getElementById('newName').value.trim();
+  const price = Number(document.getElementById('newPrice').value);
+  const images = newProductImages.filter(Boolean);
+
+  if(!name || !price){ showToast('Ajoutez au moins un nom et un prix'); return; }
+  if(images.length === 0){ showToast('Ajoutez au moins une photo'); return; }
+
+  const product = {
+    id: 'custom-' + Date.now(),
+    name,
+    cat: document.getElementById('newCat').value.trim() || 'Montre',
+    price,
+    img: images,
+    desc: document.getElementById('newDesc').value.trim() || '',
+    specs: {
+      "Mouvement": document.getElementById('newSpecMouvement').value.trim() || '—',
+      "Diamètre boîtier": document.getElementById('newSpecDiametre').value.trim() || '—',
+      "Matériau": document.getElementById('newSpecMateriau').value.trim() || '—',
+      "Bracelet": document.getElementById('newSpecBracelet').value.trim() || '—',
+      "Étanchéité": document.getElementById('newSpecEtancheite').value.trim() || '—',
+      "Garantie": document.getElementById('newSpecGarantie').value.trim() || '—'
+    }
+  };
+
+  CUSTOM_PRODUCTS.push(product);
+  persistOverrides();
+  clearNewProductForm();
+  renderGrid();
+  renderAdmin();
+  showToast('Produit ajouté avec succès');
+}
+
+function clearNewProductForm(){
+  ['newName','newCat','newPrice','newDesc','newSpecMouvement','newSpecDiametre','newSpecMateriau','newSpecBracelet','newSpecEtancheite','newSpecGarantie'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  newProductImages = [null, null, null];
+  renderNewProductSlots();
+}
+
+function deleteCustomProduct(id){
+  if(!confirm('Supprimer définitivement ce produit ?')) return;
+  CUSTOM_PRODUCTS = CUSTOM_PRODUCTS.filter(c => c.id !== id);
+  persistOverrides();
+  renderGrid();
+  renderAdmin();
+  showToast('Produit supprimé');
+}
+
+/* ---------------- Sécurité admin ---------------- */
+function isAdminAuthenticated(){
+  return sessionStorage.getItem('b7r_admin_auth') === 'true';
+}
+
+function requestAdminAccess(){
+  const pass = prompt('Entrez le mot de passe pour gérer les produits :');
+  if(pass === null) return false;
+  if(pass === getAdminPassword()){
+    sessionStorage.setItem('b7r_admin_auth', 'true');
+    return true;
+  }
+  alert('Mot de passe incorrect.');
+  return false;
+}
+
+function changeAdminPassword(){
+  const val = document.getElementById('newAdminPassword').value.trim();
+  if(!val){ showToast('Entrez un nouveau mot de passe'); return; }
+  OVERRIDES.__settings__ = { ...(OVERRIDES.__settings__||{}), password: val };
+  persistOverrides();
+  document.getElementById('newAdminPassword').value = '';
+  showToast('Mot de passe mis à jour');
+}
 
 /* ---------------- Rendu catalogue ---------------- */
 function renderGrid(){
   const grid = document.getElementById('productGrid');
-  grid.innerHTML = PRODUCTS.map(p => `
+  grid.innerHTML = getLiveProducts().map(p => `
     <div class="card">
       <div class="thumb" onclick="openProduct('${p.id}')">
         <span class="tag">${p.cat}</span>
@@ -437,13 +786,14 @@ function renderGrid(){
 
 /* ---------------- Navigation ---------------- */
 function openProduct(id){
-  currentProduct = PRODUCTS.find(p => p.id === id);
+  currentProduct = getLiveProducts().find(p => p.id === id);
   currentQty = 1;
   if(!currentProduct) return;
   location.hash = '/produit/' + id;
   renderDetail();
   document.getElementById('view-home').style.display = 'none';
   document.getElementById('view-detail').style.display = 'block';
+  document.getElementById('view-admin').style.display = 'none';
   window.scrollTo({top:0, behavior:'instant'});
 }
 
@@ -451,6 +801,19 @@ function goHome(){
   location.hash = '/';
   document.getElementById('view-home').style.display = 'block';
   document.getElementById('view-detail').style.display = 'none';
+  document.getElementById('view-admin').style.display = 'none';
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+function openAdmin(){
+  if(!isAdminAuthenticated() && !requestAdminAccess()){
+    return;
+  }
+  location.hash = '/admin';
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-detail').style.display = 'none';
+  document.getElementById('view-admin').style.display = 'block';
+  renderAdmin();
   window.scrollTo({top:0, behavior:'instant'});
 }
 
@@ -619,18 +982,49 @@ buildTicks();
 tickClock();
 setInterval(tickClock, 1000);
 
-window.addEventListener('hashchange', () => {
+(function initialRoute(){
   const hash = location.hash;
   if(hash.startsWith('#/produit/')){
     const id = hash.replace('#/produit/','');
-    const p = PRODUCTS.find(x=>x.id===id);
+    const p = getLiveProducts().find(x=>x.id===id);
     if(p){ currentProduct = p; currentQty = 1; renderDetail();
       document.getElementById('view-home').style.display='none';
       document.getElementById('view-detail').style.display='block';
     }
+  } else if(hash.startsWith('#/admin')){
+    if(isAdminAuthenticated() || requestAdminAccess()){
+      document.getElementById('view-home').style.display='none';
+      document.getElementById('view-admin').style.display='block';
+      renderAdmin();
+    } else {
+      location.hash = '/';
+    }
+  }
+})();
+
+window.addEventListener('hashchange', () => {
+  const hash = location.hash;
+  if(hash.startsWith('#/produit/')){
+    const id = hash.replace('#/produit/','');
+    const p = getLiveProducts().find(x=>x.id===id);
+    if(p){ currentProduct = p; currentQty = 1; renderDetail();
+      document.getElementById('view-home').style.display='none';
+      document.getElementById('view-detail').style.display='block';
+      document.getElementById('view-admin').style.display='none';
+    }
+  } else if(hash.startsWith('#/admin')){
+    if(isAdminAuthenticated() || requestAdminAccess()){
+      document.getElementById('view-home').style.display='none';
+      document.getElementById('view-detail').style.display='none';
+      document.getElementById('view-admin').style.display='block';
+      renderAdmin();
+    } else {
+      location.hash = '/';
+    }
   } else {
     document.getElementById('view-home').style.display='block';
     document.getElementById('view-detail').style.display='none';
+    document.getElementById('view-admin').style.display='none';
   }
 });
 </script>
